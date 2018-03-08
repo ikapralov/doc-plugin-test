@@ -7,9 +7,29 @@
     <groupId>local.test</groupId>
     <artifactId>plugin-test</artifactId>
     <version>4.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
 
 <build>
+    <resources>
+        <resource>
+            <directory>${basedir}/src/main/java</directory>
+        </resource>
+    </resources>
     <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.0.1</version>
+            <executions>
+                <execution>
+                    <id>attach-sources</id>
+                    <goals>
+                        <goal>jar-no-fork</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
         <plugin>
             <groupId>local.test</groupId>
             <artifactId>docgen-maven-plugin</artifactId>
@@ -20,16 +40,56 @@
                     <file>
                         <path>target/apidocs</path>
                     </file>
+                <docpath>
+                    <path>target/doc_resources</path>
+                </docpath>
             </configuration>
             <executions>
                 <execution>
                     <goals>
                         <goal>generate-docs</goal>
                     </goals>
-                    <phase>generate-sources</phase>
+                    <phase>package</phase>
+                </execution>
+            </executions>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.6</version>
+            <executions>
+                <execution>
+                    <id>unpack</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>unpack</goal>
+                    </goals>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>org.apache.commons</groupId>
+                                <artifactId>commons-lang3</artifactId>
+                                <type>jar</type>
+                                <overWrite>false</overWrite>
+                                <outputDirectory>${project.build.directory}/doc_resources</outputDirectory>
+
+                            </artifactItem>
+                        </artifactItems>
+                        <overWriteReleases>false</overWriteReleases>
+                        <overWriteSnapshots>false</overWriteSnapshots>
+                    </configuration>
                 </execution>
             </executions>
         </plugin>
     </plugins>
 </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+    </dependencies>
 </project>
