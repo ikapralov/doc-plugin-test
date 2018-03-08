@@ -1,3 +1,5 @@
+package ru.stoloto.test;
+
 //Haliluya!!!!!!!!!
 public class DummyClass {
 
